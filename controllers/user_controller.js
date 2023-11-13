@@ -41,7 +41,7 @@ exports.login_user = async (req, res) => {
       message: "Login Successful",
       success: true,
       loginDetails: { id: loginDetails._id, email: loginDetails.email},
-      userInfo:{email:loginDetails.email,firstName:loginDetails.firstName,lastName:loginDetails.lastName,projects:loginDetails.projects.length}
+      userInfo:{email:loginDetails.email,firstName:loginDetails.firstName,lastName:loginDetails.lastName,totalProject:loginDetails.projects.length}
     });
   } catch (error) {
     console.log("Catch block active in login due to ___", error);
