@@ -13,12 +13,12 @@ exports.register_user = async (req, res) => {
       return res.json({
         message: "User registered successfully",
         success: true,
-        saveData,
+        // saveData,
       });
     }
   } catch (error) {
     console.log("catch bloack active due to__", error);
-    return res.json({ message: error.message.split(": ")[2] });
+    return res.json({ message: error.message.split(": ")[2], success:false });
   }
 };
 
@@ -26,11 +26,6 @@ exports.register_user = async (req, res) => {
 exports.login_user = async (req, res) => {
   const { email, pw } = req.body;
   try {
-    // if (!email || !pw)
-    //     return res.send({
-    //         message: "Please enter all the fields for login",
-    //         success: false
-    //     })
     const loginDetails = await userModel.findOne({ email, pw });
     if (!loginDetails)
       return res.send({
@@ -40,12 +35,17 @@ exports.login_user = async (req, res) => {
     return res.send({
       message: "Login Successful",
       success: true,
-      loginDetails: { id: loginDetails._id, email: loginDetails.email},
-      userInfo:{email:loginDetails.email,firstName:loginDetails.firstName,lastName:loginDetails.lastName,totalProject:loginDetails.projects.length}
+      loginDetails: { id: loginDetails._id, email: loginDetails.email },
+      userInfo: {
+        email: loginDetails.email,
+        firstName: loginDetails.firstName,
+        lastName: loginDetails.lastName,
+        totalProject: loginDetails.projects.length
+      },
     });
   } catch (error) {
     console.log("Catch block active in login due to ___", error);
-    return res.json({ message: error.message.split(": ")[2] });
+    return res.json({ message: error.message.split(": ")[2] ,success:false});
   }
 };
 
@@ -105,12 +105,20 @@ exports.checkLogin = async (req, res) => {
   const { email, id } = req.params;
   try {
     const isUser = await userModel.findOne({ email, _id: id });
-    console.log(isUser)
-    if (isUser) return res.json({ success: true,
-      userInfo:{firstName:isUser.firstName,lastName:isUser.lastName,totalProject:isUser.projects.length,email:isUser.email}
-   });
+    console.log(isUser);
+    if (isUser)
+      return res.json({
+        success: true,
+        userInfo: {
+          firstName: isUser.firstName,
+          lastName: isUser.lastName,
+          totalProject: isUser.projects.length,
+          email: isUser.email,
+          userId:isUser._id
+        },
+      });
   } catch (error) {
-    return res.json({ message: "Some error occured",
-   });
+    return res.json({ message: "Some error occured",err:error.message,
+  problem:error });
   }
 };
