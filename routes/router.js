@@ -4,7 +4,7 @@ const router=new express.Router()
 
 const {register_user, login_user, delete_Account, change_password, checkLogin}=require('../controllers/user_controller')
 const { send_OTP, verify_OTP } = require('../controllers/email-otp_controllers')
-const { addProject, deleteProject, getProject, updateProject } = require('../controllers/project_controller')
+const { addProject, deleteProject, getProject, updateProject, realTimeSearch } = require('../controllers/project_controller')
 const { commentProject, getComment, replyComment } = require('../controllers/comment_controller')
 
 //todo ____registering user
@@ -42,6 +42,9 @@ router.delete('/users/v1/deleteProject/:user/:title',deleteProject)
 
 //todo ____update Project
 router.put('/users/v1/updateProject',updateProject)
+
+//todo ____real time search
+router.get('/users/v1/realTimeSearch',realTimeSearch)
 
 
 

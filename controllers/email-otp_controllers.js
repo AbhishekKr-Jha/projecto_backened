@@ -44,8 +44,9 @@ exports.send_OTP = async (req, res) => {
   console.log(email);
   try {
     const existingEmail = await userModel.findOne({ email });
-    if(existingEmail){return res.json({message:"Email already exist",success:false})}
-    
+    if (existingEmail) {
+      return res.json({ message: "Email already exist", success: false });
+    }
     //todo ____generating OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
     const previousOtp = await otpModel.findOne({ email });
@@ -56,10 +57,7 @@ exports.send_OTP = async (req, res) => {
         { new: true }
       );
       await updateData.save();
-
       //todo _____ sending email
-      // email_transporter(email, otp)
-
       const mailOptions = {
         from: "NewslyDigial@gmail.com",
         to: email,
@@ -87,9 +85,7 @@ exports.send_OTP = async (req, res) => {
         OTP: otp,
       });
       await newUserOtp.save();
-
       //todo _____ sending email
-      // email_transporter(email,otp)
       const mailOptions = {
         from: "NewslyDigial@gmail.com",
         to: email,
@@ -114,16 +110,14 @@ exports.send_OTP = async (req, res) => {
     }
   } catch (error) {
     console.log("catch bloack active due to__", error);
-    return res.json(`catch bloack active due to__${error}`);
+    console.log("");
+    return res.json({ message: error.message.split(": ")[2] });
   }
 };
 
 //verify otp...
 exports.verify_OTP = async (req, res) => {
   const { email, otp } = req.body;
-  if (!email || !otp) {
-    return res.send({ message: "please enter your otp" });
-  }
   try {
     const otpVerification = await otpModel.findOne({ email });
     if (!otpVerification) {
@@ -134,17 +128,18 @@ exports.verify_OTP = async (req, res) => {
     }
     if (otpVerification.OTP == otp) {
       return res.json({
-        message: "otp verification successful",
+        message: "OTP verification successful",
         success: true,
       });
     } else {
+      console.log(typeof otp);
       return res.json({
-        message: "invalid otp",
+        message: "Invalid OTP",
         success: false,
       });
     }
   } catch (error) {
     console.log("catch bloack active due to__", error);
-    return res.json(`catch bloack active due to__${error}`);
+    return res.json({ message: error.message.split(": ")[2], success: false });
   }
 };
