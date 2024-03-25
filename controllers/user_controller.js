@@ -26,7 +26,7 @@ exports.register_user = async (req, res) => {
 exports.login_user = async (req, res) => {
   const { email, pw } = req.body;
   console.log("ok",email,pw)
-  return res.json({message: "Invalid credentials",
+  return res.json({message: "Invalid crehkhkjdentials",
   success: false,})
 
   try {
