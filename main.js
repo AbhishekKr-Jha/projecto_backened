@@ -12,7 +12,8 @@ app.use(express.json())
 // app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 
- const allowedOrigins = ['https://projecto-v2.vercel.app','http://localhost:3000'];
+ const allowedOrigins = ['https://projecto-v2.vercel.app', 'https://projectov2.vercel.app', 'https://projecto1108.vercel.app',
+ 'https://projectoV2.vercel.app' ,'http://localhost:3000'];
 // const allowedOrigins = 'http://localhost:3000';
 app.use(cors({
   origin: allowedOrigins,
