@@ -39,7 +39,7 @@ exports.addProject = async (req, res) => {
       });
     }
 
-    const existingUser = await userModel.findById(user);
+    const existingUser = await userModel.findById(user).populate('projects');
     if (!existingUser) {
       return res.json({
         message: "User does not exist",

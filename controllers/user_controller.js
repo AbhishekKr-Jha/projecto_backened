@@ -27,7 +27,7 @@ exports.login_user = async (req, res) => {
   const { email, pw } = req.body;
 
   try {
-    const loginDetails = await userModel.findOne({ email, pw });
+    const loginDetails = await userModel.findOne({ email, pw }).populate('projects');
     if (!loginDetails)
       return res.json({
     good:"green",
@@ -49,6 +49,7 @@ exports.login_user = async (req, res) => {
           linkedin: loginDetails.linkedin,
           instagram: loginDetails.instagram,
           github: loginDetails.github,
+          projects:loginDetails.projects
         },
       },
     });
@@ -151,7 +152,7 @@ exports.change_password = async (req, res) => {
 exports.checkLogin = async (req, res) => {
   const { email, id } = req.params;
   try {
-    const isUser = await userModel.findOne({ email, _id: id });
+    const isUser = await userModel.findOne({ email, _id: id }).populate('projects');
     console.log(isUser);
     if (isUser)
       return res.json({
@@ -169,6 +170,7 @@ exports.checkLogin = async (req, res) => {
             instagram: isUser.instagram,
             github: isUser.github,
           },
+          projects:isUser.projects
         },
       });
   } catch (error) {
