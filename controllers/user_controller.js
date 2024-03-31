@@ -30,6 +30,7 @@ exports.login_user = async (req, res) => {
     const loginDetails = await userModel.findOne({ email, pw });
     if (!loginDetails)
       return res.json({
+    good:"green",
         message: "Invalid credentials",
         success: false,
       });
