@@ -14,7 +14,7 @@ exports.getComment = async (req, res) => {
       .findById(projectId)
       ?.populate("comments");
     if (!isProject) {
-      return res, json({ message: "project do not exist", success: false });
+      return res.json({ message: "project do not exist", success: false });
     }
     console.log("comments--", isProject.comments);
     return res.json({
@@ -41,7 +41,7 @@ exports.commentProject = async (req, res) => {
     if (!isProject) {
       return res.json({ message: "Project not available", success: false });
     }
-    const userName = (await user.firstName) + " " + user.lastName;
+    const userName =  user.firstName + " " + user.lastName;
     const projectComment = new commentModel({
       projectId,
       comment,

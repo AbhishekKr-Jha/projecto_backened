@@ -18,7 +18,7 @@ exports.register_user = async (req, res) => {
     }
   } catch (error) {
     console.log("catch bloack active due to__", error);
-    return res.json({ message: error.message.split(": ")[2], success:false });
+    return res.json({ message: error.message.split(": ")[2], success: false });
   }
 };
 
@@ -41,12 +41,57 @@ exports.login_user = async (req, res) => {
         email: loginDetails.email,
         firstName: loginDetails.firstName,
         lastName: loginDetails.lastName,
-        totalProject: loginDetails.projects.length
+        totalProject: loginDetails.projects.length,
+        followers: loginDetails.followers,
+        following: loginDetails.following,
+        contact: {
+          linkedin: loginDetails.linkedin,
+          instagram: loginDetails.instagram,
+          github: loginDetails.github,
+        },
       },
     });
   } catch (error) {
     console.log("Catch block active in login due to ___", error);
-    return res.json({ message: error.message.split(": ")[2] ,success:false});
+    return res.json({ message: error.message.split(": ")[2], success: false });
+  }
+};
+
+//update profile of the user
+exports.updateUserProfile = async (req, res) => {
+  const { firstName, lastName, linkedin, instagram, github, userId } = req.body;
+  try {
+    const userExist = await userModel.findById(userId);
+    if (!userExist) {
+      return res.json({
+        message: "user does not exist in database",
+        success: false,
+      });
+    }
+    const userDataUpdation = await userModel
+      .findByIdAndUpdate(
+        userId,
+        { firstName, lastName, linkedin, instagram, github },
+        { new: true }
+      )
+      .exec();
+    await userDataUpdation.save();
+    return res.json({
+      message: "updation successful",
+      success: true,
+      userInfo: {
+        firstName: userDataUpdation.firstName,
+        lastName: userDataUpdation.lastName,
+        contact: {
+          linkedin: userDataUpdation.linkedin,
+          instagram: userDataUpdation.instagram,
+          github: userDataUpdation.github,
+        },
+      },
+    });
+  } catch (error) {
+    console.log("Catch block active in update_user_profile due to ___", error);
+    return res.json({message:error.message,success:false})
   }
 };
 
@@ -111,15 +156,25 @@ exports.checkLogin = async (req, res) => {
       return res.json({
         success: true,
         userInfo: {
+          followers: isUser.followers,
+          following: isUser.following,
           firstName: isUser.firstName,
           lastName: isUser.lastName,
           totalProject: isUser.projects.length,
           email: isUser.email,
-          userId:isUser._id
+          userId: isUser._id,
+          contact: {
+            linkedin: isUser.linkedin,
+            instagram: isUser.instagram,
+            github: isUser.github,
+          },
         },
       });
   } catch (error) {
-    return res.json({ message: "Some error occured",err:error.message,
-  problem:error });
+    return res.json({
+      message: "Some error occured",
+      err: error.message,
+      problem: error,
+    });
   }
 };

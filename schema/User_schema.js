@@ -22,12 +22,50 @@ const schema = new Schema({
          if(!validator.isEmail(value)){throw new Error("Not a valid email")}
         }
      },
-     contact:[{
-      type:String,
-     }],
+     linkedin:{
+      type: String,
+      validate(value) {
+        if (value) {
+          if (!validator.isURL(value)) {
+            throw new Error("Linkedin link - Not a valid URL");
+          }
+        }
+      },
+      trim: true,
+      default:""
+    },
+    instagram:{
+      type: String,
+      validate(value) {
+        if (value) {
+          if (!validator.isURL(value)) {
+            throw new Error("Instagram link - Not a valid URL");
+          }
+        }
+      },
+      trim: true,default:""
+    },
+    github:{
+      type: String,
+      validate(value) {
+        if (value) {
+          if (!validator.isURL(value)) {
+            throw new Error("Github link - Not a valid URL");
+          }
+        }
+      },
+      trim: true,default:""
+    },
+     
      projects:[{
 type:mongoose.Types.ObjectId,
 ref:"ProjectDetail",
+     }],
+     followers:[{
+     userIdentity:String,email:String
+     }],
+     following:[{
+      userIdentity:String,email:String
      }],
      pw:{
         type:String,
