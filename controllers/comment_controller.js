@@ -5,7 +5,6 @@ const userModel = require("../schema/User_schema");
 //get comment --------
 exports.getComment = async (req, res) => {
   const { projectId } = req.params;
-  // console.log("id is",projectId)
   try {
     if (!projectId) {
       return res.json({ message: "projectId not found", success: false });
@@ -29,7 +28,7 @@ exports.getComment = async (req, res) => {
   }
 };
 
-//craete coomment----
+//craete comment----
 exports.commentProject = async (req, res) => {
   const { projectId, comment, userId } = req.body;
   try {
@@ -46,6 +45,7 @@ exports.commentProject = async (req, res) => {
       projectId,
       comment,
       user: userName,
+      userEmail:user.email
     });
 
     await projectComment.save();
@@ -63,7 +63,7 @@ exports.commentProject = async (req, res) => {
     return res.json({ message: error.message.split(": ")[2] });
   }
 };
-
+   
 //reply comment
 exports.replyComment = async (req, res) => {
   const { commentId, projectId, userId, reply } = req.body;

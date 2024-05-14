@@ -1,13 +1,18 @@
 const projectModel = require("../schema/Project_schema");
 const userModel = require("../schema/User_schema");
+const commentModel=require("../schema/Comment_schema")
 const mongoose = require("mongoose");
 
 //todo ______get projects
 exports.getProject = async (req, res) => {
-  const { email } = req.params;
+  const { email, userEmail = "default@gmail.com" } = req.params;
   console.log("-", email);
   try {
     const userExist = await userModel.findOne({ email }).populate("projects");
+    const myEmail = await userExist?.followers.find(
+      (user) => user.email === userEmail
+    );
+    console.log(myEmail);
     if (!userExist) {
       return res.json({ message: "user not available ", success: false });
     } else {
@@ -19,6 +24,12 @@ exports.getProject = async (req, res) => {
           userName: userExist.firstName + " " + userExist.lastName,
           email: userExist.email,
           projects: userExist.projects,
+          followers: userExist.followers,
+          following: userExist.following,
+
+          socialise: myEmail ? "not undefined" : "undefined",
+          social: myEmail ? "UnFollow" : "Follow",
+          // createdAt:formattedDate
         },
       });
     }
@@ -39,7 +50,7 @@ exports.addProject = async (req, res) => {
       });
     }
 
-    const existingUser = await userModel.findById(user).populate('projects');
+    const existingUser = await userModel.findById(user).populate("projects");
     if (!existingUser) {
       return res.json({
         message: "User does not exist",
@@ -67,8 +78,7 @@ exports.addProject = async (req, res) => {
       return res.json({
         message: "project added successfully in your collection",
         success: true,
-        projects:existingUser.projects
-
+        projects: existingUser.projects,
       });
     }
   } catch (error) {
@@ -85,18 +95,20 @@ exports.addProject = async (req, res) => {
 exports.deleteProject = async (req, res) => {
   console.log(req.params);
   try {
-    const { title, user } = req.params;
+    const { projectId,title } = req.params;
+    console.log(req.params)
     const del_projectTitle = await projectModel
-      .findOneAndDelete({ title, user })
+      .findByIdAndDelete(projectId)
       .populate("user")
       .populate("comments");
     if (del_projectTitle) {
       await del_projectTitle.user.projects.pull(del_projectTitle);
       await del_projectTitle.user.save();
-      const comments_id = await del_projectTitle.comments.deleteMany({
-        _id: { $in: del_projectTitle.comments },
+      const comments_id = del_projectTitle.comments.map(comment => comment._id);
+      await commentModel.deleteMany({
+        _id: { $in: comments_id },
       });
-      await del_projectTitle.comments.save();
+      // await del_projectTitle.comments.save();
       console.log(comments_id);
       return res.json({
         message: "project was successfully deleted",
@@ -113,9 +125,7 @@ exports.deleteProject = async (req, res) => {
       "catch bloack in delete project controller active due to__",
       error
     );
-    return res.json(
-      `catch bloack  in delete project controller active due to__${error}`
-    );
+    return res.json({ message: "error occured while deleting", error,success:false });
   }
 };
 
@@ -123,17 +133,14 @@ exports.deleteProject = async (req, res) => {
 exports.updateProject = async (req, res) => {
   try {
     const { title, live, github, description, project_id, user } = req.body;
+    console.log(req.body)
     const existingUser = await userModel.findById(user);
     if (!existingUser) {
       return res.json({
-        message: "user does not exist inside database",
+        message: "user is not available",
         success: false,
       });
     } else {
-      const findProject = await projectModel
-        .findById(project_id)
-        .populate("user");
-      // console.log("find_",findProject)
       const updateProject = await projectModel
         .findByIdAndUpdate(
           project_id,
@@ -141,13 +148,18 @@ exports.updateProject = async (req, res) => {
           { new: true }
         )
         .exec();
-      // console.log("update_",updateProject)
+        if(updateProject){
+          return res.json({ message: "updation successful", success: true,updateProject });
+        }
+        else{
+          res.json({message:"project not found",success:false})
+        }
       await updateProject.save();
-      return res.json({ message: "updation successful", success: true });
     }
   } catch (error) {
     console.log("catch bloack active due to__", error);
-    return res.json(`catch bloack active due to__${error}`);
+    return res.json({  message: error.message.split(": ")[2].split(",")[0],
+    success: false,});
   }
 };
 

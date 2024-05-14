@@ -6,6 +6,10 @@ const Comment_schema=new Schema({
         type:String,
         required:[true,"user is required"]
     },
+    userEmail:{
+        type:String,
+        required:[true,"user email is required"] 
+    },
     comment:{
         type:String,
         trim:true,

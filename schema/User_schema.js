@@ -1,28 +1,31 @@
-const mongoose=require('mongoose')
-const validator=require('validator')
+const mongoose = require("mongoose");
+const validator = require("validator");
 const { Schema } = mongoose;
 
-const schema = new Schema({
-    firstName:{
-        type:String,
-        required:true,
-        trim:true,
-     },
-     lastName:{
-       type:String,
-       required:true,
-       trim:true,
+const schema = new Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
     },
-     email:{
-        type:String,
-        required:true,
-        unique:[true,"Email already present"],
-        trim:true,
-        validate(value){
-         if(!validator.isEmail(value)){throw new Error("Not a valid email")}
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: [true, "Email already present"],
+      trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Not a valid email");
         }
-     },
-     linkedin:{
+      },
+    },
+    linkedin: {
       type: String,
       validate(value) {
         if (value) {
@@ -32,9 +35,9 @@ const schema = new Schema({
         }
       },
       trim: true,
-      default:""
+      default: "",
     },
-    instagram:{
+    instagram: {
       type: String,
       validate(value) {
         if (value) {
@@ -43,9 +46,10 @@ const schema = new Schema({
           }
         }
       },
-      trim: true,default:""
+      trim: true,
+      default: "",
     },
-    github:{
+    github: {
       type: String,
       validate(value) {
         if (value) {
@@ -54,36 +58,48 @@ const schema = new Schema({
           }
         }
       },
-      trim: true,default:""
+      trim: true,
+      default: "",
     },
-     
-     projects:[{
-type:mongoose.Types.ObjectId,
-ref:"ProjectDetail",
-     }],
-     followers:[{
-     userIdentity:String,email:String
-     }],
-     following:[{
-      userIdentity:String,email:String
-     }],
-     pw:{
-        type:String,
-        required:true,
-        trim:true,
+
+    projects: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "ProjectDetail",
+      },
+    ],
+    followers: [
+      {
+        userIdentity: String,
+        email: String,
+        userStatus:{
+          type:Boolean
+        }
+      },
+    ],
+    following: [
+      {
+        userIdentity: String,
+        email: String,
+        userStatus: { type: Boolean, default: true }
+      },
+    ],
+    pw: {
+      type: String,
+      required: true,
+      trim: true,
       //   validate(value){
       //    if(!validator.isStrongPassword(value)){throw new Error("Use Strong Password")}
       //   }
-     },
-     cpw:{
-       type:String,
-       required:true,
-       trim:true 
-    }
-    
-  }
-  ,{timestamps:true});
+    },
+    cpw: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  { timestamps: true }
+);
 
-
-  const model=mongoose.model("userDetail",schema)
-module.exports=model
+const model = mongoose.model("userDetail", schema);
+module.exports = model;

@@ -27,10 +27,12 @@ exports.login_user = async (req, res) => {
   const { email, pw } = req.body;
 
   try {
-    const loginDetails = await userModel.findOne({ email, pw }).populate('projects');
+    const loginDetails = await userModel
+      .findOne({ email, pw })
+      .populate("projects");
     if (!loginDetails)
       return res.json({
-    good:"green",
+        good: "green",
         message: "Invalid credentials",
         success: false,
       });
@@ -49,7 +51,7 @@ exports.login_user = async (req, res) => {
           linkedin: loginDetails.linkedin,
           instagram: loginDetails.instagram,
           github: loginDetails.github,
-          projects:loginDetails.projects
+          projects: loginDetails.projects,
         },
       },
     });
@@ -93,7 +95,7 @@ exports.updateUserProfile = async (req, res) => {
     });
   } catch (error) {
     console.log("Catch block active in update_user_profile due to ___", error);
-    return res.json({message:error.message,success:false})
+    return res.json({ message: error.message, success: false });
   }
 };
 
@@ -152,7 +154,9 @@ exports.change_password = async (req, res) => {
 exports.checkLogin = async (req, res) => {
   const { email, id } = req.params;
   try {
-    const isUser = await userModel.findOne({ email, _id: id }).populate('projects');
+    const isUser = await userModel
+      .findOne({ email, _id: id })
+      .populate("projects");
     console.log(isUser);
     if (isUser)
       return res.json({
@@ -170,7 +174,7 @@ exports.checkLogin = async (req, res) => {
             instagram: isUser.instagram,
             github: isUser.github,
           },
-          projects:isUser.projects
+          projects: isUser.projects,
         },
       });
   } catch (error) {
@@ -179,5 +183,33 @@ exports.checkLogin = async (req, res) => {
       err: error.message,
       problem: error,
     });
+  }
+};
+
+exports.delFollow = async (req, res) => {
+  try {
+    const data = await userModel.updateMany(
+      {},
+      { $unset: { followers: "", following: "" } }
+    );
+    const my = await userModel.find({});
+    res.json({ message: "message response successful", data: my });
+  } catch (error) {
+    res.send("message unsucces", `error is____ ${error}`);
+  }
+};
+
+exports.getFollowers = async (req, res) => {
+  const { email } = req.params;
+  try {
+    const data = await userModel.find({ email });
+    if (!data) res.json({ message: "data of followers not found" });
+    res.json({
+      message: "data of folowers found",
+      success: true,
+      datas: data.followers,
+    });
+  } catch (error) {
+    res.send("message unsucces", `error is____ ${error}`);
   }
 };

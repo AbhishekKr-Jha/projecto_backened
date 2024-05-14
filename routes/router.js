@@ -9,6 +9,8 @@ const {
   change_password,
   checkLogin,
   updateUserProfile,
+  delFollow,
+  getFollowers,
 } = require("../controllers/user_controller");
 const {
   send_OTP,
@@ -56,13 +58,13 @@ router.post("/users/v1/send_otp", send_OTP);
 router.post("/users/v1/otp_verification", verify_OTP);
 
 //todo ____get Project
-router.get("/users/v1/getProject/:email", getProject);
+router.get("/users/v1/getProject/:email/:userEmail", getProject);
 
 //todo ____add Project
 router.post("/users/v1/addProject", addProject);
 
 //todo ____delete Project
-router.delete("/users/v1/deleteProject/:user/:title", deleteProject);
+router.delete("/users/v1/deleteProject/:projectId/:title", deleteProject);
 
 //todo ____update Project
 router.put("/users/v1/updateProject", updateProject);
@@ -84,5 +86,14 @@ router.post("/users/v1/follow", followPeople);
 
 //todo _____unFollw peoples
 router.post("/users/v1/unfollow", unfollowPeople);
+
+
+
+//todo _____unFollw peoples
+router.get("/users/v1/delFollow", delFollow);
+
+//todo _____unFollw peoples
+router.get("/users/v1/getFollowers/:email", getFollowers);
+
 
 module.exports = router;
