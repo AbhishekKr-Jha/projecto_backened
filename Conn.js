@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 //   .catch((err) => {
 //     console.log("TERMINATED DUE TO__", err);
 //   });
-mongoose
+mongoose 
   .connect(
    process.env.CONNECTION_URL,
     {
