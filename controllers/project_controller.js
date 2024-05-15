@@ -145,16 +145,16 @@ exports.updateProject = async (req, res) => {
         .findByIdAndUpdate(
           project_id,
           { title, live, github, description },
-          { new: true }
+          { new: true,runValidators: true }
         )
         .exec();
+        await updateProject.save();
         if(updateProject){
           return res.json({ message: "updation successful", success: true,updateProject });
         }
         else{
           res.json({message:"project not found",success:false})
         }
-      await updateProject.save();
     }
   } catch (error) {
     console.log("catch bloack active due to__", error);
