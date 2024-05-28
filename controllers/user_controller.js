@@ -157,7 +157,7 @@ exports.checkLogin = async (req, res) => {
     const isUser = await userModel
       .findOne({ email, _id: id })
       .populate("projects");
-    console.log(isUser);
+    // console.log(isUser);
     if (isUser)
       return res.json({
         success: true,
@@ -177,8 +177,12 @@ exports.checkLogin = async (req, res) => {
           projects: isUser.projects,
         },
       });
+      else{
+        return res.json({success:false,message:"User not found"})
+      }
   } catch (error) {
     return res.json({
+      success:false,
       message: "Some error occured",
       err: error.message,
       problem: error,
@@ -213,3 +217,7 @@ exports.getFollowers = async (req, res) => {
     res.send("message unsucces", `error is____ ${error}`);
   }
 };
+
+exports.serverStatus=async(req,res)=>{
+  return res.json({success:true})
+}

@@ -11,6 +11,8 @@ const {
   updateUserProfile,
   delFollow,
   getFollowers,
+  serverCheck,
+  serverStatus,
 } = require("../controllers/user_controller");
 const {
   send_OTP,
@@ -38,6 +40,9 @@ router.post("/users/v1/register", register_user);
 
 //todo ____check user login
 router.get("/users/v1/checkLogin/:id/:email", checkLogin);
+
+//todo ____check server status
+router.get("/users/v1/serverstatus",serverStatus);
 
 //todo ____login user
 router.post("/users/v1/login", login_user);
