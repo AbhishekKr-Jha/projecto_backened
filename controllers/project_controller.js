@@ -5,14 +5,12 @@ const mongoose = require("mongoose");
 
 //todo ______get projects
 exports.getProject = async (req, res) => {
-  const { email, userEmail = "default@gmail.com" } = req.params;
-  console.log("-", email);
+  const { email, userEmail } = req.params;
   try {
     const userExist = await userModel.findOne({ email }).populate("projects");
     const myEmail = await userExist?.followers.find(
       (user) => user.email === userEmail
     );
-    console.log(myEmail);
     if (!userExist) {
       return res.json({ message: "user not available ", success: false });
     } else {
