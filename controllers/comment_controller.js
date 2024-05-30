@@ -12,6 +12,7 @@ exports.getComment = async (req, res) => {
     const isProject = await projectModel
       .findById(projectId)
       ?.populate("comments");
+
     if (!isProject) {
       return res.json({ message: "project do not exist", success: false });
     }
@@ -40,19 +41,18 @@ exports.commentProject = async (req, res) => {
     if (!isProject) {
       return res.json({ message: "Project not available", success: false });
     }
-    const userName =  user.firstName + " " + user.lastName;
+    const userName = user.firstName + " " + user.lastName;
     const projectComment = new commentModel({
       projectId,
       comment,
       user: userName,
-      userEmail:user.email
+      userEmail: user.email,
     });
 
     await projectComment.save();
-    console.log("ok");
-    console.log(projectComment);
     isProject.comments.push(projectComment._id);
     await isProject.save();
+
     return res.json({
       message: "comment added successfully",
       success: true,
@@ -63,7 +63,7 @@ exports.commentProject = async (req, res) => {
     return res.json({ message: error.message.split(": ")[2] });
   }
 };
-   
+
 //reply comment
 exports.replyComment = async (req, res) => {
   const { commentId, projectId, userId, reply } = req.body;
